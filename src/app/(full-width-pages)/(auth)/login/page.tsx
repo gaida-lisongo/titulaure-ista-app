@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import api from "@/api";
 import { Agent } from "@/types/agents";
 import UserCard from "@/components/user-profile/UserCard";
+import AgentList from "@/components/agents/AgentList";
 
 export default function Profile() {
   const { Titulaire } = api;
@@ -62,11 +63,7 @@ export default function Profile() {
           Connectez - vous à votre compte
         </h3>
         <div className="space-y-6">
-          {
-            data && data.map((item: Agent, idx) => (
-              <UserCard key={idx} agent={item} />
-            ))
-          }
+          <AgentList data={data} />
         </div>
       </div>
     </div>

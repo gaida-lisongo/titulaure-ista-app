@@ -7,13 +7,23 @@ import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import Image from "next/image";
 import { Agent } from "@/types/agents";
-
+import api from "@/api";
 
 export default function UserCard({ agent }: { agent: Agent }) {
   const { isOpen, openModal, closeModal } = useModal();
-  const handleSave = () => {
+  const [message, setMessage] = React.useState("");
+  const [error, setError] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const[password, setPassword] = React.useState("");
+  const { Titulaire } = api;
+
+  const handleSave = async () => {
     // Handle save logic here
     console.log("Saving changes...");
+    console.log("Password:", password);
+    console.log("Matricule:", agent.matricule);
+    const request = Titulaire.loginTitulaire(agent.matricule, password);
+    console.log(request);
     closeModal();
   };
   return (
@@ -25,7 +35,7 @@ export default function UserCard({ agent }: { agent: Agent }) {
               <Image
                 width={80}
                 height={80}
-                src={"/images/user/owner.jpg"}
+                src={ agent.avatar ? `https://ista-gm.net/public/Views/template/img/profile/${agent.avatar}` : "/images/user/owner.jpg"}
                 alt="user"
               />
             </div>
@@ -68,7 +78,7 @@ export default function UserCard({ agent }: { agent: Agent }) {
           </button>
         </div>
       </div>
-      <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
+      {/* <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
         <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
           <div className="px-2 pr-14">
             <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
@@ -155,6 +165,107 @@ export default function UserCard({ agent }: { agent: Agent }) {
               </Button>
               <Button size="sm" onClick={handleSave}>
                 Save Changes
+              </Button>
+            </div>
+          </form>
+        </div>
+      </Modal> */}
+      
+      <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
+        <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+          <div className="px-2 pr-14">
+            <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
+              Connexion
+            </h4>
+            <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
+              {message}
+            </p>
+          </div>
+          <form className="flex flex-col">
+            <div className="custom-scrollbar h-[280px] overflow-y-auto px-2 pb-3">
+              {/* <div>
+                <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
+                  Social Links
+                </h5>
+
+                <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                  <div>
+                    <Label>Facebook</Label>
+                    <Input
+                      type="text"
+                      defaultValue="https://www.facebook.com/PimjoHQ"
+                    />
+                  </div>
+
+                  <div>
+                    <Label>X.com</Label>
+                    <Input type="text" defaultValue="https://x.com/PimjoHQ" />
+                  </div>
+
+                  <div>
+                    <Label>Linkedin</Label>
+                    <Input
+                      type="text"
+                      defaultValue="https://www.linkedin.com/company/pimjo"
+                    />
+                  </div>
+
+                  <div>
+                    <Label>Instagram</Label>
+                    <Input
+                      type="text"
+                      defaultValue="https://instagram.com/PimjoHQ"
+                    />
+                  </div>
+                </div>
+              </div> */}
+              <div className="mt-7">
+                <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
+                  {message}
+                </h5>
+
+                <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                  <div className="col-span-2 lg:col-span-1">
+                    <Label>Nom: {agent.nom}</Label>
+                  </div>
+
+                  <div className="col-span-2 lg:col-span-1">
+                    <Label>Grade : {agent.grade}</Label>
+                  </div>
+
+                  <div className="col-span-2 lg:col-span-1">
+                    <Label>Post - nom: {agent.post_nom}</Label>
+                  </div>
+
+                  <div className="col-span-2 lg:col-span-1">
+                    <Label>Email: {agent.e_mail}</Label>
+                  </div>
+
+                  <div className="col-span-2 lg:col-span-1">
+                    <Label>Prenom: {agent.prenom}</Label>
+                  </div>
+
+                  <div className="col-span-2 lg:col-span-1">
+                    <Label>Téléphone: {agent.telephone}</Label>
+                  </div>
+
+                  <div className="col-span-2">
+                    <Label>Matricule : {agent.matricule} </Label>
+                    <Input 
+                        type="password" 
+                        placeholder="Entrer votre mot de passe"
+                        onChange={(e) => setPassword(e.target.value)} 
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+              <Button size="sm" variant="outline" onClick={closeModal}>
+                Annuler
+              </Button>
+              <Button size="sm" onClick={handleSave}>
+                Se connecter
               </Button>
             </div>
           </form>
