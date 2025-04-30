@@ -2,7 +2,6 @@
 import React, { useEffect } from "react";
 import api from "@/api";
 import { Agent } from "@/types/agents";
-import UserCard from "@/components/user-profile/UserCard";
 import AgentList from "@/components/agents/AgentList";
 
 export default function Profile() {
