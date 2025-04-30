@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
@@ -8,14 +8,22 @@ import Label from "../form/Label";
 import Image from "next/image";
 import { Agent } from "@/types/agents";
 import api from "@/api";
+import useAgentStore from "@/stores/AgentStore";
 
 export default function UserCard({ agent }: { agent: Agent }) {
+  const { isToken, setInfoPerso, setIsToken} = useAgentStore();
   const { isOpen, openModal, closeModal } = useModal();
   const [message, setMessage] = React.useState("");
   const [error, setError] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const[password, setPassword] = React.useState("");
   const { Titulaire } = api;
+
+  useEffect(() => {
+    if (isToken) {
+      window.location.href = "/";
+    }
+  }, [isToken]);
 
   const fetchUserToken = async ({login, password} : {login: string, password: string}) => {
     setLoading(true);
@@ -41,16 +49,16 @@ export default function UserCard({ agent }: { agent: Agent }) {
         setMessage("Erreur de connexion !");
         setError(true);
         setLoading(false);
-        // return;
+        return;
     }
 
     //Save token in cookies
     document.cookie = `token=${token}; path=/; max-age=3600`;
     setMessage("Connexion réussie !");
+    setInfoPerso(agent);
+    setIsToken(true);
 
     closeModal();
-
-    window.location.href = "/";
   };
   return (
     <>
